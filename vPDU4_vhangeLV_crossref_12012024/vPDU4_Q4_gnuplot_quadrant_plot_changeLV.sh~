@@ -1,0 +1,131 @@
+#!/usr/bin/gnuplot -persist
+#Opened gnuplot programme in terminal
+
+#For each NEW plot: 4 things to fix
+
+#-----------------Plotting----------------------
+#Plot first main diagrams and fix titles
+
+
+set datafile separator ', '
+#----------For one tile
+#plot "FFT-run910-chan0.txt" u 1:2 w l t "Tile 1" lc "dark-turquoise" #Tile 1
+#plot "FFT-run764-chan0.txt" u 1:2 w l t "Tile 2" lc "royalblue" #Tile 2
+#plot "FFT-run765-chan0.txt" u 1:2 w l t "Tile 3" lc "dark-blue" #Tile 3
+#plot "FFT-run766-chan0.txt" u 1:2 w l t "Tile 4" lc "skyblue" #Tile 4
+
+#----------For two tiles
+#replot "FFT-run788-chan0.txt" u 1:2 w l t "Tile 1 and 2" lc "purple" #Tile 1and2
+#replot "FFT-run837-chan0.txt" u 1:2 w l t "Tile 1 and 3" lc "dark-violet" #Tile 1and3
+#replot "FFT-run839-chan0.txt" u 1:2 w l t "Tile 2 and 3" lc "dark-pink" #Tile 2and3
+#plot "FFT-run841-chan0.txt" u 1:2 w l t "Tile 3 and 4" lc "orchid4" #Tile 3and4
+#plot "FFT-run838-chan0.txt" u 1:2 w l t "Tile 1 and 4" lc "mediumpurple3" #Tile 1 and 4
+#plot "FFT-run840-chan0.txt" u 1:2 w l t "Tile 2 and 4" lc "web-blue" #Tile 2 and 4
+
+#----------For three tiles
+#replot "FFT-run789-chan0.txt" u 1:2 w l t "Tile 1 and 2 and 3" lc "slateblue1" #Tile 1and2and3
+#plot "FFT-run844-chan0.txt" u 1:2 w l t "Tile 2 and 3 and 4" lc "sea-green" #Tile 2and3and4
+#replot "FFT-run842-chan0.txt" u 1:2 w l t "Tile 1 and 3 and 4" lc "yellow4" #Tile 1and3and4
+#replot "FFT-run843-chan0.txt" u 1:2 w l t "Tile 1 and 2 and 4" lc "spring-green" #Tile 1and2and4
+
+#----------For Four tiles
+plot "FFT-run914-chan3.txt" u 1:2 w l t "Tile 13 and 14 and 15 and 16 (full Q4)" lc "light-pink" #Tile 1and2and3and4
+
+
+
+#-------------------------
+#-----------Overlaying
+# COPY here from above to overlay between them in whichever order wanted
+
+
+
+
+
+#--------------Calculation plots
+#REMEMBER TO CHANGE "set datafile separator ','"
+#set datafile separator "\t"
+#replot "alltiles12_quadrant1.txt" u 1:($6-$2)  w l t "Tiles 1and2 - Tile 1" lc "plum" #Tile 1and2 - Tile1
+#replot "alltiles12_quadrant1.txt" u 1:($6-$4)  w l t "Tiles 1and2 - Tile 2" lc "dark-pink" #Tile 1and2 - Tile2
+
+#plot "alltiles12_quadrant1.txt" u 1:($4-$2)  w l t "Tile 2 - Tile 1" lc "violet" #Tile 1and2 - Tile1
+
+#---------------Manually averaged plots
+#plot "alltiles12_quadrant1.txt" u 1:6 w l t "Tiles 1 and 2" lc "purple", "" u 1:($2+$4)/2 w l t "(Tile 1 + Tile 2)/2" lc "sienna1"
+#plot "alltiles123_quadrant1.txt" u 1:8 w l t "Tiles 1 and 2 and 3" lc "slateblue1", "" u 1:($2+$4+$6)/3 w l t "(Tile 1 + Tile 2 + Tile 3)/3" lc "orange-red"
+
+
+#----------Graphic art---------------
+set title "COLD Noise for vPDU4 | Quadrant 4 tiles"
+set xlabel "Frequency [MHz]"
+set ylabel "Intensity [dBm/Hz]"
+replot
+
+#-------------------Saving---------------------
+#Save plots in folder 
+set term png
+
+#------Plain tile plots
+#set output "./simple_plots/noise_tile2.png"
+set output "./simple_plots/noise_tile1and2and3and4.png"
+#set output "noise_tile1and2and4.png"
+
+#------Overlays
+#set output "noise_overlay_tile2and3and4_tile1and3and4_tile1and2and4.png"
+#set output "./overlays/noise_overlay_tile1and3and4_tile2and3and4_tile1and2and4.png"
+
+#------Minus
+#set output "noise_overlay_tile1and2_minus_tile12.png"
+#set output "noise_overlay_tile2_minus_tile1.png"
+
+#-------Average
+#set output "noise_overlay_tile1and2and3_avg_tile1and2_tile3.png"
+
+replot
+set term x11
+
+
+
+#-------------Calculating ratios between maxima spikes-----------------------
+# Define two helper functions
+#ismin(x) = (x<min)?min=x:-165
+#ismax(x) = (x>max)?max=x:-110
+
+# Initialise the 'global' vars
+#max=-110
+#min=-165
+
+# Run through the data and pass it to the helper functions.
+# Any expression for the 'using' will do, as long as it contains both
+# helper functions
+#set xrange [15:28]
+
+#-------------
+#wc -l alltiles12_quadrant1.txt -> 499999 alltiles12_quadrant1.txt
+#----------------
+
+#plot "< tail -n +100000 alltiles12_quadrant1.txt" u 5:6 w lines
+
+#plot "< tail -n +100000 alltiles12_quadrant1.txt" u 5:(ismin($6)*ismax($6))
+
+# Now, max and min will hold the maximum and minimum of column 0 of
+# your data
+
+#print "Max for Tiles 1and2 is: ", max
+#print "Min for Tiles 1and2 is: ", min
+
+
+exit
+
+#---------------------------------------------------
+#Author of this script:
+#Lucy Kotsiopoulou
+#PhD studennt
+#University of Edinburgh
+#
+#Inspired by: Dr. ANdrzej Szelc (Supervisor)
+#
+#First started on: 20/11/2023
+#
+#Please provide credit when sharing
+#----------------------------------------------------
+
